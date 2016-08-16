@@ -4,10 +4,12 @@ Update cache, upgrade packages, install default firewall, reboot then check for 
 
 #### Quick Start
 
-Clone the repo and then run the playbook
+Clone the repo and then run the playbook as specified
 
 ! Don't forget to change the hostname to your own test server e.g. **1.2.3.4** from 10.10.10.10
+
 ! **hosts** field is set to **all** to allow host specification via command line
+
 ! This playbook works only if you've already set SSH keys as the **root** user e.g. use ssh-copy-id to root@1.2.3.4.
 
 ```bash
