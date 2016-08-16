@@ -1,0 +1,38 @@
+---
+- hosts: all
+  tasks:
+  - name: update packages cache and latest version
+    apt: upgrade=safe update_cache=yes
+    register: result0
+  - debug: msg="{{result0.stdout_lines}}"
+  - name: install firewall
+    apt: name=ufw state=present
+    register: result1
+  - debug: msg="{{result1.stdout_lines}}"
+  - name: setup firewall
+    ufw: state=enabled policy=allow
+    register: result2
+  - debug:
+      var: result2
+  - name: setup default SSH port to open for safety, then reboot
+    ufw: rule=allow port=22
+    notify:
+    - restart server
+    - wait for return
+    - uptime
+    register: result3
+  - debug:
+      var: result3
+  - meta: flush_handlers
+  - name: uptime check
+    command: uptime
+    register: result4
+  - debug: msg="{{result4.stdout}}"
+  handlers:
+  - name: restart server
+    shell: sleep 2 && shutdown -r -f now "Reboot after updates"
+    async: 1
+    poll: 0
+    ignore_errors: false
+  - name: wait for return
+    local_action: wait_for host={{ ansible_default_ipv4.address }} port=22 state=started delay=30 timeout=300
