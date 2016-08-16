@@ -19,7 +19,6 @@
     notify:
     - restart server
     - wait for return
-    - uptime
     register: result3
   - debug:
       var: result3
